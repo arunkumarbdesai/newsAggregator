@@ -1,0 +1,27 @@
+name: Daily Tech Digest
+
+on:
+  schedule:
+    # Runs at 12:00 UTC (7:00 AM CST / 5:30 PM IST) every day
+    - cron: '0 12 * * *'
+  workflow_dispatch: # Allows you to manually trigger it via UI if needed
+
+jobs:
+  run-aggregator:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/actions-setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Script
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }} # Gmail App Password
+          EMAIL_RECEIVER: ${{ secrets.EMAIL_RECEIVER }}
+        run: python aggregator.py
